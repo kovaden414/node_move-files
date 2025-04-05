@@ -14,13 +14,21 @@ async function main() {
 
       newPath = path.join(newPath, filename);
     }
-  } catch (error) {
-    if (error.code === 'ENOENT') {
-      if (newPath.endsWith('/')) {
-        throw new Error();
+  } catch (err) {
+    if (err.code === 'ENOENT') {
+      const parentDir = path.dirname(newPath);
+
+      try {
+        const parentStat = await fsp.stat(parentDir);
+
+        if (!parentStat.isDirectory()) {
+          console.error(err);
+        }
+      } catch {
+        console.error(err);
       }
     } else {
-      console.error(error);
+      console.error(err);
     }
   }
 
