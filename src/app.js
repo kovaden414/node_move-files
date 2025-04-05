@@ -15,7 +15,11 @@ async function main() {
       newPath = path.join(newPath, filename);
     }
   } catch (error) {
-    if (error.code !== 'ENOENT') {
+    if (error.code === 'ENOENT') {
+      if (newPath.endsWith('/')) {
+        throw new Error();
+      }
+    } else {
       console.error(error);
     }
   }
